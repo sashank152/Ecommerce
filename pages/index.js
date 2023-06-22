@@ -1,31 +1,22 @@
 import Head from 'next/head'
-import Image from 'next/image'
-import { Inter } from 'next/font/google'
 import styles from '@/styles/Home.module.css'
-import { useSession, signIn, signOut } from "next-auth/react"
-import Nav from '@/Components/nav'
-
-const inter = Inter({ subsets: ['latin'] })
+import Layout from '@/Components/layout'
+import { useSession } from 'next-auth/react'
 
 export default function Home() {
-  const { data:session } = useSession();
-  if(!session){
-    return (
-      <div className = "bg-blue-900 w-screen h-screen flex items-center">
-        <div className='text-center w-full'>
-          <button onClick={()=>signIn('google')} className='bg-white p-2 px-4 rounded-lg'>Login With Google</button>
-        </div> 
-      </div>
-    )
-  }
-  
-  return(
-
-    <div className='bg-blue-900 min-h-screen'>
-      <Nav />
-      <div>
-        logged in as {session.user.email}
+  const {data : session} = useSession();
+  console.log({session})
+  return <Layout>
+    <div className='text-blue-900 flex justify-between'>
+      <h1>
+        Hello, <b>{session?.user.name.toLocaleUpperCase()}</b>
+      </h1>
+      <div className="flex bg-gray-300 gap-1 text-black rounded-lg"> 
+        <img src={session?.user?.image} alt ="" className="w-8 h-8 overflow-hidden" />
+        <span className='px-2'> 
+          {session?.user?.name.toUpperCase()}
+        </span>
       </div>
     </div>
-  )
+  </Layout>
 }
