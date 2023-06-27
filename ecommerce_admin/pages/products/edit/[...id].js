@@ -16,7 +16,7 @@ export default function EditProductPage()
             {
                 setProductInfo(response.data)
             });
-    })
+    },[])
     return(
         <Layout>
             <h1>Edit Product</h1>

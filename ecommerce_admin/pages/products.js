@@ -30,7 +30,7 @@ export default function Products()
                 {
                 products.map
                     (product =>
-                        <tr>
+                        <tr key = {product._id}>
                             <td>
                                 {product.title}
                             </td>
