@@ -7,6 +7,6 @@ const ProductSchema = new Schema({
     images: [{type:String}],
     category: {type: mongoose.Types.ObjectId, ref:'Category'},
     properties: {type:Object}
-}, { minimize: false , timestamps: true,})
+}, { minimize: false ,timestamps : true,})
 
 export const Product =models.Product || model('Product', ProductSchema)
