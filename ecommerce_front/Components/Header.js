@@ -6,6 +6,7 @@ import { useContext } from "react";
 
 const StyledHeader= styled.header`
     background-color:#222;
+    padding:40px
 `;
 
 const Logo = styled(Link)`
@@ -41,7 +42,7 @@ export default function Header(){
                         <NavLink href={'/products'}>All Products</NavLink>
                         <NavLink href={'/categories'}>Categories</NavLink>
                         <NavLink href={'/account'}>Account</NavLink>
-                        <NavLink href={'/cart'}>Cart ({cartProducts.length})</NavLink>
+                        <NavLink href={'/cartPage'}>Cart ({cartProducts.length})</NavLink>
                     </StyledNav>  
                 </Wrapper>
             </Center>  

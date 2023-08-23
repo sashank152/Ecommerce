@@ -49,11 +49,11 @@ const ButtonsWrapper=styled.div`
 
 
 export default function Featured({FeaturedProduct}) {
-    const {setCartProducts} = useContext(CartContext);
+    const {addProduct} = useContext(CartContext);
+    
     function addFeaturedToCart()
     {
-        setCartProducts(prev => [...prev,FeaturedProduct._id]);
-        console.log(setCartProducts);
+        addProduct(FeaturedProduct._id);   
     }
     return (
         <Bg>
