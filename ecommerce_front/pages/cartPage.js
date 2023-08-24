@@ -6,6 +6,7 @@ import { CartContext } from "@/Components/CartContext";
 import { useContext,useState,useEffect } from "react";
 import axios from "axios";
 import Table from "@/Components/Table";
+import Input from "@/Components/Input";
 
 const ColumnsWrapper = styled.div`
     display:grid;
@@ -43,15 +44,48 @@ const QuantityLabel = styled.span`
     padding:0 3px;
 `;
 
+const CityHolder = styled.div`
+    display:flex;
+    gap:5px;
+`;
+
 export default function CartPage() {
+    // if(window.location.href.includes('success'))
+    // {
+    //     return(
+    //         <>
+    //         <Header />
+    //         <Center>
+    //             <ColumnsWrapper>
+    //             <Box>
+    //                 <h1>Thanks for your order!</h1>
+    //                 <p>
+    //                     We will notify you of your order status via email.
+    //                 </p>
+    //             </Box>
+    //             </ColumnsWrapper>
+    //         </Center>
+    //         </>
+    //     )
+    // }
     const {cartProducts,addProduct,removeProduct} = useContext(CartContext) 
     const [products,setProducts] = useState([]);
+    const [name,setName] = useState('');
+    const [email,setEmail] = useState('');
+    const [city,setCity] = useState('');
+    const [postalCode,setPostalCode] = useState('');
+    const [streetAddress,setStreetAddress] = useState('');
+    const [country,setCountry] = useState('');
     useEffect(()=> {
         if(cartProducts.length > 0)
         {
             axios.post('/api/cart',{ids:cartProducts}).then(response => {
                 setProducts(response.data);
             })
+        }
+        else
+        {
+            setProducts([]);
         }
     },[cartProducts])
 
@@ -64,11 +98,24 @@ export default function CartPage() {
     {
         removeProduct(id);
     }
+    async function goToPayment()
+    {
+        const response = await axios.post('/api/checkout',{
+            name,email,city,postalCode,streetAddress,country,
+            cartProducts,
+        })
+        if(response.data.url)
+        {
+            window.location=response.data.url;
+        }
+    }
+
     let total = 0
     for(const productId of cartProducts){
         const price = products.find(p => p._id === productId)?.price || 0;
         total = total + price;
     }
+    
     return(
         <>
             <Header />
@@ -90,7 +137,7 @@ export default function CartPage() {
                         </thead>
                         <tbody>
                             {products.map(product => (
-                                    <tr>
+                                    <tr key='product._id'>
                                         <ProductInfoCell>
                                             <ProductImageBox>
                                                 <img src = {product.images[0]} alt="" />
@@ -108,7 +155,7 @@ export default function CartPage() {
                                     </tr>
                                 ))}
                                 <tr>
-                                    <td><h2>Total Price:</h2></td>
+                                    <td><h3>Total Price:</h3></td>
                                     <td></td>
                                     <td>S${total}</td>
                                 </tr>
@@ -120,10 +167,22 @@ export default function CartPage() {
                 
                 {!!cartProducts.length && (
                     <Box>
-                    <h2>Order Information</h2>
-                    <input type="text" placeholder="Address Line 1" />
-                    <input type="text" placeholder="Address Line 2" />
-                    <PrimaryBtn>Continue to Payment</PrimaryBtn>
+                        <h2>Order Information</h2>
+                        <Input type="text" placeholder="Name"  value = {name} name="name" onChange={
+                            ev => setName(ev.target.value)}/>
+                        <Input type="text" placeholder="Email" value = {email} name="email" onChange={
+                            ev => setEmail(ev.target.value)}/>
+                        <CityHolder>
+                        <Input type="text" placeholder="City" value = {city} name="city" onChange={
+                            ev => setCity(ev.target.value)}/>
+                        <Input type="text" placeholder="Postal Code" value = {postalCode} name="postalCode" onChange={
+                            ev => setPostalCode(ev.target.value)}/>
+                        </CityHolder>
+                        <Input type="text" placeholder="Street Address" value = {streetAddress} name="streetAddress" onChange={
+                            ev => setStreetAddress(ev.target.value)}/>
+                        <Input type="text" placeholder="Country" value = {country} name="country" onChange={
+                            ev => setCountry(ev.target.value)}/>
+                        <PrimaryBtn onClick={goToPayment}>Continue to Payment</PrimaryBtn>
                 </Box>
                 )}
                 
